@@ -37,6 +37,17 @@ app.get("/api/persons", (request, response) => {
   response.json(persons);
 }); //   http://localhost:3001/api/persons
 
+app.get("/api/persons/:id", (request, response) => {
+  const id = request.params.id;
+  const entry = persons.find((item) => item.id === id);
+  if (entry) {
+    response.json(entry);
+  } else {
+    response.status(404).end();
+  }
+}); //   http://localhost:3001/api/persons/1 for example
+//   http://localhost:3001/api/persons/10 for fail 404 example
+
 // use ` to write cleaner structured html code
 app.get("/api/info", (request, response) => {
   const amount_people = persons.length;
