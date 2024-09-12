@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json()); // this is a middleware that parses incoming requests with JSON payloads
 
 let persons = [
   {
@@ -50,9 +51,34 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  persons = persons.filter((note) => note.id !== id);
+  persons = persons.filter((item) => item.id !== id);
 
   response.status(204).end(); // this is also the response for nonexistent 404 for this learning exercise
+});
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "name and/or number missing",
+    });
+  }
+  const generateId = () => {
+    return Math.floor(Math.random() * 4294967295);
+  };
+  let random_id = generateId();
+  console.log(random_id);
+  while (persons.find((item) => item.id === random_id)) {
+    random_id = generateId();
+    console.log(random_id);
+  }
+  const entry = {
+    name: body.name,
+    number: body.number,
+    id: random_id,
+  };
+  persons = persons.concat(entry);
+  response.json(entry);
 });
 
 // use ` to write cleaner structured html code
