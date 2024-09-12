@@ -4,9 +4,12 @@ const app = express();
 app.use(express.json()); // this is a 'Express json-parser' middleware that parses incoming requests with JSON payloads
 
 var morgan = require("morgan"); // https://github.com/expressjs/morgan (needs: npm install morgan)
-app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
+// app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
 // example output: POST /api/persons 200 58 - 4.724 ms (* see .rest file to use post and detailed response)
 
+morgan.token('content', function (req, res) { return JSON.stringify(req.body) }); // custom token to log the body of the request
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
+// example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
 
 let persons = [
   {
