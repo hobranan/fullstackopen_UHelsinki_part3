@@ -63,6 +63,13 @@ app.post("/api/persons", (request, response) => {
       error: "name and/or number missing",
     });
   }
+  // reference to codes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses
+  // trying 409 Conflict: This response is sent when a request conflicts with the current state of the server.
+  if (persons.find((item) => item.name === body.name)) {
+    return response.status(409).json({
+      error: "name must be unique, name already exists",
+    });
+  }
   const generateId = () => {
     return Math.floor(Math.random() * 4294967295);
   };
