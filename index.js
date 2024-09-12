@@ -3,17 +3,24 @@ const app = express();
 // middleware happens in the order they are defined
 app.use(express.json()); // this is a 'Express json-parser' middleware that parses incoming requests with JSON payloads
 
-const cors = require('cors')  // https://github.com/expressjs/cors (needs: npm install cors)
-app.use(cors()) // this is a 'cors' middleware that allows requests from other origins
+const cors = require("cors"); // https://github.com/expressjs/cors (needs: npm install cors)
+app.use(cors()); // this is a 'cors' middleware that allows requests from other origins
 
 var morgan = require("morgan"); // https://github.com/expressjs/morgan (needs: npm install morgan)
 // app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
 // example output: POST /api/persons 200 58 - 4.724 ms (* see .rest file to use post and detailed response)
 
-morgan.token('content', function (req, res) { return JSON.stringify(req.body) }); // custom token to log the body of the request
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
+morgan.token("content", function (req, res) {
+  return JSON.stringify(req.body);
+}); // custom token to log the body of the request
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :content"
+  )
+);
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
 
+// starter data (and 'persons' hold server's data state)
 let persons = [
   {
     id: "1",
@@ -82,19 +89,19 @@ app.post("/api/persons", (request, response) => {
       error: "name must be unique, name already exists",
     });
   }
-  const generateId = () => {
-    return Math.floor(Math.random() * 4294967295);
-  };
-  let random_id = generateId();
-  console.log(random_id);
-  while (persons.find((item) => item.id === random_id)) {
-    random_id = generateId();
-    console.log(random_id);
-  }
+  // const generateId = () => {
+  //   return Math.floor(Math.random() * 4294967295);
+  // };
+  // let random_id = generateId();
+  // console.log(random_id);
+  // while (persons.find((item) => item.id === random_id)) {
+  //   random_id = generateId();
+  //   console.log(random_id);
+  // }
   const entry = {
     name: body.name,
     number: body.number,
-    id: random_id,
+    id: body.id,
   };
   persons = persons.concat(entry);
   response.json(entry);
@@ -111,7 +118,7 @@ app.get("/api/info", (request, response) => {
     `);
 }); //   http://localhost:3001/api/info
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
