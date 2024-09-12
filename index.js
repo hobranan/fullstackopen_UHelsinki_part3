@@ -48,6 +48,13 @@ app.get("/api/persons/:id", (request, response) => {
 }); //   http://localhost:3001/api/persons/1 for example
 //   http://localhost:3001/api/persons/10 for fail 404 example
 
+app.delete("/api/persons/:id", (request, response) => {
+  const id = request.params.id;
+  persons = persons.filter((note) => note.id !== id);
+
+  response.status(204).end(); // this is also the response for nonexistent 404 for this learning exercise
+});
+
 // use ` to write cleaner structured html code
 app.get("/api/info", (request, response) => {
   const amount_people = persons.length;

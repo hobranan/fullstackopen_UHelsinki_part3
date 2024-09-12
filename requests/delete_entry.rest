@@ -1,0 +1,9 @@
+DELETE http://localhost:3001/api/persons/1
+
+# Response:
+# HTTP/1.1 204 No Content
+# X-Powered-By: Express
+# Date: Thu, 12 Sep 2024 20:22:02 GMT
+# Connection: close
+
+# http://localhost:3001/api/persons shows that the entry with id 1 has been deleted
