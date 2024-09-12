@@ -22,4 +22,18 @@ ctrl+c
 npm install express
 npm install --save-dev nodemon
 npm update
-npm dev
+npm run dev
+
+
+HTTP request types explained:
+GET requests receival of a data package
+HEAD requests receival of only a data package's response code and header info
+PUT requests changing a db's entry with different info
+DELETE requests deleting a db's entry
+POST requests adding a db's entry (or whole db set of entries) 
+*POST is the type of HTTP request with chance of side effects (i.e. repeated same exact requests may cause a different result)
+
+ctrl+c
+npm install morgan
+npm update
+npm run dev

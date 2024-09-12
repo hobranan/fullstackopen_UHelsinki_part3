@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
-app.use(express.json()); // this is a middleware that parses incoming requests with JSON payloads
+// middleware happens in the order they are defined
+app.use(express.json()); // this is a 'Express json-parser' middleware that parses incoming requests with JSON payloads
+
+var morgan = require("morgan"); // https://github.com/expressjs/morgan (needs: npm install morgan)
+app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
+// example output: POST /api/persons 200 58 - 4.724 ms (* see .rest file to use post and detailed response)
+
 
 let persons = [
   {
@@ -103,3 +109,10 @@ const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// after-route middleware
+// this is a custom middleware that handles unknown routes
+// const unknownEndpoint = (request, response, next) => {
+//   response.status(404).send({ error: "unknown endpoint" });
+// };
+// app.use(unknownEndpoint);
