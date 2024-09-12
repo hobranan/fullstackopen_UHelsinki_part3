@@ -1,0 +1,35 @@
+POST https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "put on render",
+    "number": "34534523452345"
+}
+
+# Render's Logs show:
+# 3747184998 *(i.e. the id of the new entry)
+# POST /api/persons 200 66 - 1.288 ms {"name":"put on render","number":"34534523452345"}
+
+# Detailed Response:
+# HTTP/1.1 200 OK
+# Date: Thu, 12 Sep 2024 23:23:48 GMT
+# Content-Type: application/json; charset=utf-8
+# Transfer-Encoding: chunked
+# Connection: close
+# CF-Ray: 8c23a5bb1e9f2dad-YVR
+# CF-Cache-Status: DYNAMIC
+# Access-Control-Allow-Origin: *
+# ETag: W/"42-9/KxZ2ErMjLYGjA8yFAoJ4BCkQE"
+# Vary: Accept-Encoding
+# rndr-id: a2d07d0a-e966-4b1d
+# x-powered-by: Express
+# x-render-origin-server: Render
+# Server: cloudflare
+# Content-Encoding: gzip
+# alt-svc: h3=":443"; ma=86400
+
+# {
+#   "name": "put on render",
+#   "number": "34534523452345",
+#   "id": 3747184998
+# }

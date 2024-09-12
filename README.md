@@ -48,3 +48,8 @@ GET /api/persons 304 - - 3.762 ms {}
 GET /api/persons 304 - - 1.194 ms {}
 2224957689
 POST /api/persons 200 58 - 2.076 ms {"name":"john barker","number":"13241234","id":"6"} -->
+
+
+part 3.10 - Phonebook backend step 10, Deploy the backend to the internet, for example to Fly.io or Render.:
+https://hobranan-fullstackopen-uhelsinki-part3.onrender.com
+https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/api/persons 
