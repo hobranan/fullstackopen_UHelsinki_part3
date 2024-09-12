@@ -3,6 +3,9 @@ const app = express();
 // middleware happens in the order they are defined
 app.use(express.json()); // this is a 'Express json-parser' middleware that parses incoming requests with JSON payloads
 
+const cors = require('cors')  // https://github.com/expressjs/cors (needs: npm install cors)
+app.use(cors()) // this is a 'cors' middleware that allows requests from other origins
+
 var morgan = require("morgan"); // https://github.com/expressjs/morgan (needs: npm install morgan)
 // app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
 // example output: POST /api/persons 200 58 - 4.724 ms (* see .rest file to use post and detailed response)

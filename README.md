@@ -37,3 +37,14 @@ ctrl+c
 npm install morgan
 npm update
 npm run dev
+
+<!-- chrome console error on frontend port 5173: 
+Access to XMLHttpRequest at 'http://localhost:3001/api/persons' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. -->
+ctrl+c
+npm install cors
+npm run dev 
+<!-- example morgan output:
+GET /api/persons 304 - - 3.762 ms {}
+GET /api/persons 304 - - 1.194 ms {}
+2224957689
+POST /api/persons 200 58 - 2.076 ms {"name":"john barker","number":"13241234","id":"6"} -->
