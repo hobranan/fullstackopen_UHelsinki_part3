@@ -1,3 +1,4 @@
+require("dotenv").config(); // Loads .env file contents into process.env by default
 const express = require("express");
 const app = express();
 // middleware happens in the order they are defined
@@ -20,7 +21,43 @@ app.use(
 );
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
 
-app.use(express.static('dist')) // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
+app.use(express.static("dist")); // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
+
+const Person = require("./models/person");
+// require("dotenv").config(); // Loads .env file contents into process.env by default
+// if (process.argv.length < 3) {
+//   console.log("give password as argument");
+//   process.exit(1);
+// }
+const password = process.argv[2]; // command: node mongo.js yourpassword
+// const mongoose = require("mongoose");
+// mongoose.set("strictQuery", false);
+// const url = process.env.MONGODB_URI; // MONGODB_URI="mongodb+srv://fullstack:password@db.gwcmebp.mongodb.net/?retryWrites=true&w=majority&appName=db"
+// console.log("connecting to", url);
+// mongoose
+//   .connect(url)
+//   .then((result) => {
+//     console.log("connected to MongoDB");
+//   })
+//   .catch((error) => {
+//     console.log("error connecting to MongoDB:", error.message);
+//   });
+// const personSchema = new mongoose.Schema({
+//   name: String,
+//   number: String,
+// });
+// personSchema.set("toJSON", {
+//   transform: (document, returnedObject) => {
+//     returnedObject.id = returnedObject._id.toString();
+//     delete returnedObject._id;
+//     delete returnedObject.__v;
+//   },
+// });
+// const Person = mongoose.model("Person", personSchema); // name of the collection is 'people' (from 'Person' model)
+// In the Person model definition, the first "Person" parameter is the singular name of the model.
+// The name of the collection will be the lowercase plural people, because the Mongoose convention
+// is to automatically name collections as the plural (e.g. people)
+// when the schema refers to them in the singular (e.g. Person).
 
 // starter data (and 'persons' hold server's data state)
 let persons = [
@@ -56,7 +93,10 @@ app.get("/hello", (request, response) => {
 }); //   http://localhost:3001/hello
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  // response.json(persons);
+  Person.find({}).then((result) => {
+    response.json(result);
+  });
 }); //   http://localhost:3001/api/persons
 
 app.get("/api/persons/:id", (request, response) => {
@@ -120,7 +160,7 @@ app.get("/api/info", (request, response) => {
     `);
 }); //   http://localhost:3001/api/info
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

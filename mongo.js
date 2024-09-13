@@ -1,6 +1,6 @@
 // ref: https://fullstackopen.com/en/part3/saving_data_to_mongo_db
 // const Note = require("./models/note");
-require("dotenv").config();
+require("dotenv").config(); // Loads .env file contents into process.env by default
 
 if (process.argv.length < 3) {
   console.log("give password as argument");

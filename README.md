@@ -63,3 +63,5 @@ npm install mongoose
 node mongo.js <yourpassword>
 
 npm install dotenv
+<!-- setup backend to fetch from mongodb -->
+npm run dev 
