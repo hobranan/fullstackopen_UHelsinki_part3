@@ -54,3 +54,6 @@ part 3.10 - Phonebook backend step 10, Deploy the backend to the internet, for e
 https://hobranan-fullstackopen-uhelsinki-part3.onrender.com
 https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/api/persons 
 
+part 3.11 confirmation:
+frontend dist works with backend, all fullstack on Render
+https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/
