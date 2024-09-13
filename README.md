@@ -57,3 +57,9 @@ https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/api/persons
 part 3.11 confirmation:
 frontend dist works with backend, all fullstack on Render
 https://hobranan-fullstackopen-uhelsinki-part3.onrender.com/
+
+
+npm install mongoose
+node mongo.js <yourpassword>
+
+npm install dotenv
