@@ -20,6 +20,8 @@ app.use(
 );
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
 
+app.use(express.static('dist')) // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
+
 // starter data (and 'persons' hold server's data state)
 let persons = [
   {
@@ -49,9 +51,9 @@ let persons = [
   },
 ];
 
-app.get("/", (request, response) => {
+app.get("/hello", (request, response) => {
   response.send("<h1>Hello World!</h1>");
-}); //   http://localhost:3001/
+}); //   http://localhost:3001/hello
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
