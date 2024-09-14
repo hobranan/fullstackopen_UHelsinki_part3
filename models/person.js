@@ -3,14 +3,14 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const url = process.env.MONGODB_URI; // MONGODB_URI="mongodb+srv://fullstack:password@db.gwcmebp.mongodb.net/?retryWrites=true&w=majority&appName=db"
 console.log("connecting to", url);
-mongoose
-  .connect(url)
-  .then((result) => {
-    console.log("connected to MongoDB");
-  })
-  .catch((error) => {
-    console.log("error connecting to MongoDB:", error.message);
-  });
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on("error", (error) => {
+  console.log("error connecting to MongoDB:", error.message);
+});
+db.once("open", () => {
+  console.log("connected to MongoDB");
+});
 
 const personSchema = new mongoose.Schema({
   name: String,

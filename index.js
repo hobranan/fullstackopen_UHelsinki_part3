@@ -22,7 +22,7 @@ app.use(
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
 
 app.use(express.static("dist")); // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
-
+const mongoose = require('mongoose');
 const Person = require("./models/person");
 // require("dotenv").config(); // Loads .env file contents into process.env by default
 // if (process.argv.length < 3) {
@@ -126,27 +126,26 @@ app.post("/api/persons", (request, response) => {
   }
   // reference to codes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses
   // trying 409 Conflict: This response is sent when a request conflicts with the current state of the server.
-  if (persons.find((item) => item.name === body.name)) {
-    return response.status(409).json({
-      error: "name must be unique, name already exists",
-    });
-  }
-  // const generateId = () => {
-  //   return Math.floor(Math.random() * 4294967295);
-  // };
-  // let random_id = generateId();
-  // console.log(random_id);
-  // while (persons.find((item) => item.id === random_id)) {
-  //   random_id = generateId();
-  //   console.log(random_id);
+  // if (persons.find((item) => item.name === body.name)) {
+  //   return response.status(409).json({
+  //     error: "name must be unique, name already exists",
+  //   });
   // }
-  const entry = {
+  // const entry = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: body.id,
+  // };
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: body.id,
-  };
-  persons = persons.concat(entry);
-  response.json(entry);
+    number: body.number
+  });
+  person.save().then((result) => {
+    console.log(`added ${person.name} number ${person.number} to phonebook`);
+    mongoose.connection.close();
+  });
+  // persons = persons.concat(entry);
+  response.json(person);
 });
 
 // use ` to write cleaner structured html code
