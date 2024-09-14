@@ -179,14 +179,27 @@ app.post("/api/persons", (request, response) => {
 });
 
 // use ` to write cleaner structured html code
-app.get("/api/info", (request, response) => {
-  const amount_people = persons.length;
-  const date = new Date();
-  response.send(`
-    <h1>Phonebook has info for ${amount_people} people</h1>
-    <br/>
-    <h2>${date}</h2>
-    `);
+// app.get("/api/info", (request, response) => {
+//   const amount_people = persons.length;
+//   const date = new Date();
+//   response.send(`
+//     <h1>Phonebook has info for ${amount_people} people</h1>
+//     <br/>
+//     <h2>${date}</h2>
+//     `);
+// }); //   http://localhost:3001/api/info
+// ref: https://www.mongodb.com/docs/drivers/node/current/usage-examples/count/#:~:text=collection.,of%20documents%20in%20the%20collection.
+app.get("/api/info", (request, response, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const date = new Date();
+      response.send(`
+        <h1>Phonebook has info for ${count} people</h1>
+        <br/>
+        <h2>${date}</h2>
+        `);
+    })
+    .catch((error) => next(error));
 }); //   http://localhost:3001/api/info
 
 const PORT = process.env.PORT;
