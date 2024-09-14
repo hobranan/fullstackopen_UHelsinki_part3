@@ -15,38 +15,9 @@ app.use(
   )
 );
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
-app.use(express.static("dist")); // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
-const mongoose = require("mongoose");
-const Person = require("./models/person");
-
-//* starter data (and 'persons' hold server's 'live' data state [not the actual db])
-let persons = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-  {
-    id: "5",
-    name: "Bary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+app.use(express.static("dist")); // this is a 'static' middleware that serves static files from the 'dist' folder,...
+// ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
+const Person = require("./models/person"); // this is a 'mongoose' model that represents a person in the phonebook
 
 //* routes
 app.get("/hello", (request, response) => {
@@ -54,7 +25,6 @@ app.get("/hello", (request, response) => {
 }); //   http://localhost:3001/hello
 
 app.get("/api/persons", (request, response) => {
-  // response.json(persons);
   Person.find({}).then((result) => {
     response.json(result);
   });
@@ -74,6 +44,26 @@ app.get("/api/persons/:id", (request, response, next) => {
 // http://localhost:3001/api/persons/66e4d4c87984387b834fe42a "jujujjjuju" example
 // http://localhost:3001/api/persons/66e4d4c87900000000000000 for fail 404 example
 // http://localhost:3001/api/persons/66e4d4c879 for fail 400 example {"error":"malformatted id"}
+
+app.post("/api/persons", (request, response, next) => {
+  const body = request.body;
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "name and/or number missing",
+    });
+  } // checks for more bad values like: null, undefined, NaN, empty string, 0, false
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
+  person
+    .save()
+    .then((result) => {
+      console.log(`added ${person.name} number ${person.number} to phonebook`);
+      response.json(result);
+    })
+    .catch((error) => next(error));
+}); // check requests/create***.rest files for testing
 
 app.put("/api/persons/:id", (request, response, next) => {
   const { name, number } = request.body;
@@ -96,31 +86,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 }); // check requests/delete***.rest files for testing
 
-app.post("/api/persons", (request, response, next) => {
-  const body = request.body;
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "name and/or number missing",
-    });
-  }
-  // if (body.name === undefined || body.number === undefined) {
-  //   return response.status(400).json({ error: 'content missing' })
-  // } // (!body.name || !body.number) checks for more bad values like: null, undefined, NaN, empty string, 0, false
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  });
-  person
-    .save()
-    .then((result) => {
-      console.log(`added ${person.name} number ${person.number} to phonebook`);
-      response.json(result);
-      // mongoose.connection.close(); //* should i remove this, or will my db on the server be unnecessarily open all the time?
-    })
-    .catch((error) => next(error));
-}); // check requests/create***.rest files for testing
-
-// use ` to write cleaner structured html code
 app.get("/api/info", (request, response, next) => {
   Person.countDocuments({})
     .then((count) => {
@@ -129,7 +94,7 @@ app.get("/api/info", (request, response, next) => {
         <h1>Phonebook has info for ${count} people</h1>
         <br/>
         <h2>${date}</h2>
-        `);
+        `); // use ` to write cleaner structured html code
     })
     .catch((error) => next(error));
 }); //   http://localhost:3001/api/info
