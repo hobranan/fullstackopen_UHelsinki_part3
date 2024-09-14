@@ -65,3 +65,12 @@ node mongo.js <yourpassword>
 npm install dotenv
 <!-- setup backend to fetch from mongodb -->
 npm run dev 
+
+npm install eslint @eslint/js --save-dev
+npx eslint --init
+npm install --save-dev @stylistic/eslint-plugin-js
+<!-- update eslint.config.mjs file -->
+npx eslint index.js
+npm run lint
+npx eslint --fix .
+<!-- remember to later see how to config ESlint and Prettier formatter to work together, because Prettier undoes lint's fixes -->
