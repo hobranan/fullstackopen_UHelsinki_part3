@@ -4,8 +4,8 @@ PUT http://localhost:3001/api/persons/66e4c79e54029f10c1fc5a3f HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Arto Vihavainen",
-    "number": "9999999999"
+    "name": "Ar",
+    "number": "12-1234567"
 }
 
 # Response:

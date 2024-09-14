@@ -19,7 +19,6 @@ app.use(express.static("dist")); // this is a 'static' middleware that serves st
 const mongoose = require("mongoose");
 const Person = require("./models/person");
 
-
 //* starter data (and 'persons' hold server's 'live' data state [not the actual db])
 let persons = [
   {
@@ -77,12 +76,12 @@ app.get("/api/persons/:id", (request, response, next) => {
 // http://localhost:3001/api/persons/66e4d4c879 for fail 400 example {"error":"malformatted id"}
 
 app.put("/api/persons/:id", (request, response, next) => {
-  const body = request.body;
-  const person = {
-    name: body.name,
-    number: body.number,
-  };
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  const { name, number } = request.body;
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
     .then((updatedNote) => {
       response.json(updatedNote);
     })
@@ -97,23 +96,28 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 }); // check requests/delete***.rest files for testing
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: "name and/or number missing",
     });
   }
+  // if (body.name === undefined || body.number === undefined) {
+  //   return response.status(400).json({ error: 'content missing' })
+  // } // (!body.name || !body.number) checks for more bad values like: null, undefined, NaN, empty string, 0, false
   const person = new Person({
     name: body.name,
     number: body.number,
   });
-  person.save().then((result) => {
-    console.log(`added ${person.name} number ${person.number} to phonebook`);
-    // mongoose.connection.close(); //should i remove this, or will my db on the server be unnecessarily open all the time?
-  });
-  // persons = persons.concat(entry);
-  response.json(person);
+  person
+    .save()
+    .then((result) => {
+      console.log(`added ${person.name} number ${person.number} to phonebook`);
+      response.json(result);
+      // mongoose.connection.close(); //* should i remove this, or will my db on the server be unnecessarily open all the time?
+    })
+    .catch((error) => next(error));
 }); // check requests/create***.rest files for testing
 
 // use ` to write cleaner structured html code
@@ -146,6 +150,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
