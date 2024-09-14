@@ -1,0 +1,25 @@
+# {"name":"Arto Vihavainen","number":"045-1232456","id":"66e4c79e54029f10c1fc5a3f"}
+
+PUT http://localhost:3001/api/persons/66e4c79e54029f10c1fc5a3f HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Arto Vihavainen",
+    "number": "9999999999"
+}
+
+# Response:
+# HTTP/1.1 200 OK
+# X-Powered-By: Express
+# Access-Control-Allow-Origin: *
+# Content-Type: application/json; charset=utf-8
+# Content-Length: 80
+# ETag: W/"50-4ZXPVA9lKFMcSbaaeR5KY5O/+cg"
+# Date: Sat, 14 Sep 2024 01:39:57 GMT
+# Connection: close
+# 
+# {
+#   "name": "Arto Vihavainen",
+#   "number": "9999999999",
+#   "id": "66e4c79e54029f10c1fc5a3f"
+# }

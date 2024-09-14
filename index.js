@@ -121,18 +121,31 @@ app.get("/api/persons/:id", (request, response, next) => {
 // http://localhost:3001/api/persons/66e4d4c87900000000000000 for fail 404 example
 // http://localhost:3001/api/persons/66e4d4c879 for fail 400 example {"error":"malformatted id"}
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote);
+    })
+    .catch((error) => next(error));
+});
+
 // app.delete("/api/persons/:id", (request, response) => {
 //   const id = request.params.id;
 //   persons = persons.filter((item) => item.id !== id);
 //   response.status(204).end(); // this is also the response for nonexistent 404 for this learning exercise
 // });
-app.delete('/api/persons/:id', (request, response, next) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
-      response.status(204).end()
+    .then((result) => {
+      response.status(204).end();
     })
-    .catch(error => next(error))
-})
+    .catch((error) => next(error));
+});
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
