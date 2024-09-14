@@ -1,16 +1,13 @@
+//* declared libs, settings, and pre-route middleware (middleware happens in the order they are defined)
 require("dotenv").config(); // Loads .env file contents into process.env by default
 const express = require("express");
 const app = express();
-// middleware happens in the order they are defined
 app.use(express.json()); // this is a 'Express json-parser' middleware that parses incoming requests with JSON payloads
-
 const cors = require("cors"); // https://github.com/expressjs/cors (needs: npm install cors)
 app.use(cors()); // this is a 'cors' middleware that allows requests from other origins
-
 var morgan = require("morgan"); // https://github.com/expressjs/morgan (needs: npm install morgan)
 // app.use(morgan("tiny")); // this is a 'morgan' middleware that logs the requests to the console
 // example output: POST /api/persons 200 58 - 4.724 ms (* see .rest file to use post and detailed response)
-
 morgan.token("content", function (req, res) {
   return JSON.stringify(req.body);
 }); // custom token to log the body of the request
@@ -20,11 +17,9 @@ app.use(
   )
 );
 // example output: POST /api/persons 200 58 - 4.794 ms {"name":"sample Name","number":"123-4458"}
-
 app.use(express.static("dist")); // this is a 'static' middleware that serves static files from the 'dist' folder, ref: https://fullstackopen.com/en/part3/deploying_app_to_internet#serving-static-files-from-the-backend
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Person = require("./models/person");
-// require("dotenv").config(); // Loads .env file contents into process.env by default
 // if (process.argv.length < 3) {
 //   console.log("give password as argument");
 //   process.exit(1);
@@ -59,7 +54,7 @@ const password = process.argv[2]; // command: node mongo.js yourpassword
 // is to automatically name collections as the plural (e.g. people)
 // when the schema refers to them in the singular (e.g. Person).
 
-// starter data (and 'persons' hold server's data state)
+//* starter data (and 'persons' hold server's data state)
 let persons = [
   {
     id: "1",
@@ -88,6 +83,7 @@ let persons = [
   },
 ];
 
+//* routes
 app.get("/hello", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 }); //   http://localhost:3001/hello
@@ -99,23 +95,44 @@ app.get("/api/persons", (request, response) => {
   });
 }); //   http://localhost:3001/api/persons
 
-app.get("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  const entry = persons.find((item) => item.id === id);
-  if (entry) {
-    response.json(entry);
-  } else {
-    response.status(404).end();
-  }
-}); //   http://localhost:3001/api/persons/1 for example
-//   http://localhost:3001/api/persons/10 for fail 404 example
-
-app.delete("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  persons = persons.filter((item) => item.id !== id);
-
-  response.status(204).end(); // this is also the response for nonexistent 404 for this learning exercise
+app.get("/api/persons/:id", (request, response, next) => {
+  // const id = request.params.id;
+  // const entry = persons.find((item) => item.id === id);
+  // if (entry) {
+  //   response.json(entry);
+  // } else {
+  //   response.status(404).end();
+  // }
+  Person.findById(request.params.id)
+    .then((item) => {
+      if (item) {
+        response.json(item);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+  // .catch(error => {
+  //   console.log(error)
+  //   response.status(400).send({ error: 'malformatted id' })
+  // })
 });
+// http://localhost:3001/api/persons/66e4d4c87984387b834fe42a "jujujjjuju" example
+// http://localhost:3001/api/persons/66e4d4c87900000000000000 for fail 404 example
+// http://localhost:3001/api/persons/66e4d4c879 for fail 400 example {"error":"malformatted id"}
+
+// app.delete("/api/persons/:id", (request, response) => {
+//   const id = request.params.id;
+//   persons = persons.filter((item) => item.id !== id);
+//   response.status(204).end(); // this is also the response for nonexistent 404 for this learning exercise
+// });
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
+})
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
@@ -138,7 +155,7 @@ app.post("/api/persons", (request, response) => {
   // };
   const person = new Person({
     name: body.name,
-    number: body.number
+    number: body.number,
   });
   person.save().then((result) => {
     console.log(`added ${person.name} number ${person.number} to phonebook`);
@@ -164,9 +181,16 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// after-route middleware
-// this is a custom middleware that handles unknown routes
-// const unknownEndpoint = (request, response, next) => {
-//   response.status(404).send({ error: "unknown endpoint" });
-// };
-// app.use(unknownEndpoint);
+//* after-route middleware
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint); // this is a custom middleware that handles unknown routes
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+app.use(errorHandler); // this has to be the last loaded middleware, also all the routes should be registered before this!

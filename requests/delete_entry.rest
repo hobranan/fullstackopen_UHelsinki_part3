@@ -7,3 +7,6 @@ DELETE http://localhost:3001/api/persons/1
 # Connection: close
 
 # http://localhost:3001/api/persons shows that the entry with id 1 has been deleted
+
+###
+DELETE http://localhost:3001/api/persons/66e4d0829bef61e58b625513
