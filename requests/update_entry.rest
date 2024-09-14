@@ -4,8 +4,8 @@ PUT http://localhost:3001/api/persons/66e4c79e54029f10c1fc5a3f HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Ar",
-    "number": "12-1234567"
+    "name": "Art",
+    "number": "12-12345678"
 }
 
 # Response:
@@ -22,4 +22,23 @@ content-type: application/json
 #   "name": "Arto Vihavainen",
 #   "number": "9999999999",
 #   "id": "66e4c79e54029f10c1fc5a3f"
+# }
+
+# for (bad number):
+# {
+#     "name": "Art",
+#     "number": "12-12345678"
+# }
+# Failing Response: 
+# HTTP/1.1 400 Bad Request
+# X-Powered-By: Express
+# Access-Control-Allow-Origin: *
+# Content-Type: application/json; charset=utf-8
+# Content-Length: 79
+# ETag: W/"4f-iE5Y3wJS3fGCPnsa1aZc3N+53mw"
+# Date: Sat, 14 Sep 2024 18:29:05 GMT
+# Connection: close
+
+# {
+#   "error": "Validation failed: number: 12-12345678 is not a valid phone number!"
 # }

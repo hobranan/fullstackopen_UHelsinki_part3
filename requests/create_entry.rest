@@ -2,8 +2,8 @@ POST http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
 
 {
-    "name": "ga",
-    "number": "12-1234567"
+    "name": "bro",
+    "number": "123-1234567"
 }
 
 # Response:
@@ -22,3 +22,22 @@ content-type: application/json
 # }
 
 # http://localhost:3001/api/persons shows that the entry has been added
+
+# for (bad number):
+# {
+#     "name": "bro",
+#     "number": "123-1234567"
+# }
+# Failing Response: 
+# HTTP/1.1 400 Bad Request
+# X-Powered-By: Express
+# Access-Control-Allow-Origin: *
+# Content-Type: application/json; charset=utf-8
+# Content-Length: 86
+# ETag: W/"56-O+s4DNGYX5h8CwgyZTG3wdV9jGQ"
+# Date: Sat, 14 Sep 2024 18:27:36 GMT
+# Connection: close
+# 
+# {
+#   "error": "Person validation failed: number: 123-1234567 is not a valid phone number!"
+# }

@@ -18,7 +18,7 @@ const personSchema = new mongoose.Schema({
     minLength: 3,
     required: [true, "name required"],
   },
-  number: {
+  number: { // already had custom validator in the schema
     type: String,
     minLength: 8,
     validate: {
