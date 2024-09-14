@@ -186,6 +186,7 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 app.use(unknownEndpoint); // this is a custom middleware that handles unknown routes
+// below is the custom middleware that handles errors (from routes with 'next' function); can test with http://localhost:3001/api/persons/66e4d4c879 for fail 400 example {"error":"malformatted id"}
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
